@@ -1,9 +1,9 @@
-const pg = require("pg");
-const settings = require("./settings");
-const dateFormat = require('dateformat');
-let name = process.argv[2];
 
-const client = new pg.Client({
+const settings = require("./settings");
+let name = process.argv[2];
+const knex = require("knex") ({
+  client: 'pg',
+  connection: settings,
   user     : settings.user,
   password : settings.password,
   database : settings.database,
@@ -11,6 +11,14 @@ const client = new pg.Client({
   port     : settings.port,
   ssl      : settings.ssl
 });
+// const client = new pg.Client({
+//   user     : settings.user,
+//   password : settings.password,
+//   database : settings.database,
+//   host     : settings.hostname,
+//   port     : settings.port,
+//   ssl      : settings.ssl
+// });
 
 client.connect((err) => {
   if (err) {
@@ -26,7 +34,7 @@ client.connect((err) => {
 
     for (var i = 0; i < result.rows.length; i++) {
       var currRecord = result.rows[i];
-      var output = "- " + i + ": " + currRecord.first_name + " " + currRecord.last_name + " "+ "born" + " " + "'"+ dateFormat(currRecord.birthdate,'yyyy-mm-dd'+"'")
+      var output = "- " + i + ": " + currRecord.first_name + " " + currRecord.last_name + " "+ "born" + " " + (currRecord.birthdate)
       console.log(output);
     }
     client.end();
